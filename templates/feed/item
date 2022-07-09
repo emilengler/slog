@@ -1,0 +1,6 @@
+		<item>
+			<title>${title}</title>
+			<link>http://example.com/post/${id}.html</link>
+			<pubDate>${daterss}</pubDate>
+			<guid>${id}</guid>
+		</item>
