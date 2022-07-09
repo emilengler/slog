@@ -248,6 +248,10 @@ post_init(struct post *post, FILE *fp, const char *datefmt)
 	post->datefmt = astrftime(datefmt, &post->date);
 	post->daterss = astrftime("%a, %d %b %Y %T %Z", &post->date);
 
+	/*
+	 * Simply pointing to buf is not possible, because there is no gurantee
+	 * that the string is NUL-terminated.
+	 */
 	post->body = estrndup(md.buf, md.bufsz);
 
 	markdown_free(&md);
