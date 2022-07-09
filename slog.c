@@ -64,6 +64,10 @@ static __dead void	 usage(void);
 /* slog(1) specific functions. */
 static void		 markdown_init(struct markdown *, FILE *);
 static void		 markdown_free(struct markdown *);
+static void		 output(const char *, const char *, const char *,
+				struct post posts[], size_t);
+static void		 output_posts(const char *, const char *,
+				      struct post[], size_t);
 static void		 post_init(struct post *, FILE *, const char *);
 static void		 post_free(struct post *);
 static void		 read_template(char *[], const char *);
@@ -210,6 +214,53 @@ markdown_free(struct markdown *md)
 {
 	lowdown_metaq_free(&md->metaq);
 	free(md->buf);
+}
+
+static void
+output(const char *output_dir, const char *templates_dir, const char *file,
+       struct post posts[], size_t postssz)
+{
+	char	*template[3], *path_template, *path_output;
+	FILE	*fp;
+	int	 i;
+
+	path_template = aprintf("%s/%s", templates_dir, file);
+	read_template(template, path_template);
+	free(path_template);
+
+	path_output = aprintf("%s/%s", output_dir, file);
+	fp = efopen(path_output, "w");
+	free(path_output);
+	write_page(template, posts, postssz, fp);
+	fclose(fp);
+
+	for (i = 0; i < 3; ++i)
+		free(template[i]);
+}
+
+static void
+output_posts(const char *output_dir, const char *templates_dir,
+	     struct post posts[], size_t postssz)
+{
+	char	*template[3], *path_template, *path_output;
+	FILE	*fp;
+	size_t	 i;
+
+	path_template = aprintf("%s/post", templates_dir);
+	read_template(template, path_template);
+	free(path_template);
+
+	for (i = 0; i < postssz; ++i) {
+		path_output = aprintf("%s/post/%s.html", output_dir,
+				      posts[i].id);
+		fp = efopen(path_output, "w");
+		free(path_output);
+		write_page(template, posts + i, 1, fp);
+		fclose(fp);
+	}
+
+	for (i = 0; i < 3; ++i)
+		free(template[i]);
 }
 
 static void
@@ -381,6 +432,10 @@ main(int argc, char *argv[])
 				errx(1, "duplicate id %s", posts[i].id);
 		}
 	}
+
+	output(output_dir, templates_dir, "index.html", posts, postssz);
+	output(output_dir, templates_dir, "feed.xml", posts, postssz);
+	output_posts(output_dir, templates_dir, posts, postssz);
 
 	/* Clean everything up. */
 	for (i = 0; i < postssz; ++i)
