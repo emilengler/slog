@@ -17,6 +17,7 @@
 #include <sys/types.h>
 #include <sys/queue.h>
 
+#include <ctype.h>
 #include <err.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -65,6 +66,7 @@ static void		 post_free(struct post *);
 static void		 template_init(struct template *, const char *);
 static void		 template_free(struct template *);
 static __dead void	 usage(void);
+static void		 validate_id(const char *);
 static void		 write_page(struct template *, struct post[], size_t,
 				    FILE *);
 
@@ -214,9 +216,10 @@ post_init(struct post *post, FILE *fp)
 	TAILQ_FOREACH(meta, &md.metaq, entries) {
 		/* TODO: Make this more elegant. */
 		/* TODO: Fix potential memory leaks regarding duplicate keys. */
-		if (strcmp(meta->key, "id") == 0)
+		if (strcmp(meta->key, "id") == 0) {
+			validate_id(meta->value);
 			post->id = estrdup(meta->value);
-		else if (strcmp(meta->key, "title") == 0)
+		} else if (strcmp(meta->key, "title") == 0)
 			post->title = estrdup(meta->value);
 		else if (strcmp(meta->key, "date") == 0)
 			post->date = fmt_date(meta->value, "%F %R");
@@ -272,6 +275,17 @@ static __dead void
 usage(void)
 {
 	errx(1, "usage: %s [-d datefmt] template post ...", getprogname());
+}
+
+static void
+validate_id(const char *id)
+{
+	const char	*s;
+
+	for (s = id; *s != '\0'; ++s) {
+		if (!islower(*s))
+			errx(1, "invalid key %s", id);
+	}
 }
 
 static void
