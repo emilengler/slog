@@ -1,1 +1,0 @@
-				<li>${datefmt}: <a href="post/${id}.html">${title}</a></li>

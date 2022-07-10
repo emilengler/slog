@@ -1,24 +1,43 @@
-.PHONY: all clean
+NAME		 = slog
+VERSION		 = 1.0.0
 
-CFLAGS	+= -W -Wall -Wextra -Wpedantic
-CFLAGS	+= `pkg-config --cflags lowdown`
-LDFLAGS	+= `pkg-config --libs lowdown`
+PREFIX		 = /usr/local
+MANPREFIX	 = ${PREFIX}/man
 
-SRC	 = slog.c
-BIN	 = slog
+BIN		 = slog
+SRC		 = slog.c
+MAN1		 = slog.1
 
-OBJ	 = ${SRC:.c=.o}
+OBJ		 = ${SRC:.c=.o}
 
-all: ${BIN}
-
-clean:
-	rm -f ${BIN} ${OBJ}
-
-.o:
-	${CC} ${LDFLAGS} -o $@
+CFLAGS		+= `pkg-config --cflags lowdown`
+LDFLAGS		+= `pkg-config --libs lowdown`
 
 .c.o:
 	${CC} ${CFLAGS} ${CPPFLAGS} -o $@ -c $<
 
+all: ${BIN}
+
+clean:
+	rm -f ${OBJ} ${BIN} ${NAME}-${VERSION}.tar.gz
+
+dist:
+	mkdir -p ${NAME}-${VERSION}
+	cp -f ${SRC} ${MAN1} LICENSE.md Makefile ${NAME}-${VERSION}
+	tar czf ${NAME}-${VERSION}.tar.gz ${NAME}-${VERSION}
+	rm -rf ${NAME}-${VERSION}
+
+install: all
+	mkdir -p ${DESTDIR}${PREFIX}/bin
+	mkdir -p ${DESTDIR}${PREFIX}/man/man1
+	for f in ${BIN}; do install -m 0555 $$f ${DESTDIR}${PREFIX}/bin; done
+	for f in ${MAN1}; do install -m 0444 $$f ${DESTDIR}${PREFIX}/man/man1; done
+
+uninstall:
+	for f in ${BIN}; do rm -f ${DESTDIR}${PREFIX}/bin/$$f; done
+	for f in ${MAN1}; do rm -f ${DESTDIR}${PREFIX}/man/man1/$$f; done
+
 slog: slog.o
 	${CC} -o $@ slog.o ${LDFLAGS}
+
+.PHONY: all clean dist install uninstall
