@@ -15,12 +15,33 @@
  */
 
 #include <sys/types.h>
+#include <sys/queue.h>
 
 #include <stdio.h>
+
+#include <lowdown.h>
+
+struct markdown {
+	struct lowdown_metaq	 metaq;
+	char			*buf;
+	size_t			 nbuf;
+};
+
+struct post {
+	char	*id;
+	char	*title;
+	char	*date;
+	char	*body;
+};
+
+struct template {
+	char	*header;
+	char	*item;
+	char	*footer;
+};
 
 int
 main(int argc, char *argv[])
 {
-	puts("Hello, world!");
 	return 0;
 }
