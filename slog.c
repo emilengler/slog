@@ -57,6 +57,7 @@ static char		*estrndup(const char *, size_t);
 static char		*aprintf(const char *, ...);
 static char		*fmt_date(const char *, const char *);
 static char		*read_file(const char *);
+static void		 xml_fputs(const char *, FILE *);
 
 /* slog(1) specific functions. */
 static void		 markdown_init(struct markdown *, FILE *);
@@ -169,6 +170,25 @@ read_file(const char *filename)
 	str[sz] = '\0';
 
 	return str;
+}
+
+/*
+ * The copyright of the following function is as follows:
+ * Copyright (c) 2016-2020 Hiltjo Posthuma <hiltjo@codemadness.org>
+ */
+static void
+xml_fputs(const char *s, FILE *fp)
+{
+	for (; *s != '\0'; ++s) {
+		switch (*s) {
+		case '<':	fputs("&lt;",	fp); break;
+		case '>':	fputs("&gt;",	fp); break;
+		case '\'':	fputs("&#39",	fp); break;
+		case '&':	fputs("&amp;",	fp); break;
+		case '"':	fputs("&quot;",	fp); break;
+		default:	fputc(*s, fp);
+		}
+	}
 }
 
 static void
@@ -310,9 +330,9 @@ write_page(struct template *tmplt, struct post posts[], size_t nposts, FILE *fp)
 				if (strcmp(key, "id") == 0)
 					fputs(posts[i].id, fp);
 				else if (strcmp(key, "title") == 0)
-					fputs(posts[i].title, fp);
+					xml_fputs(posts[i].title, fp);
 				else if (strcmp(key, "date") == 0)
-					fputs(posts[i].date, fp);
+					xml_fputs(posts[i].date, fp);
 				else if (strcmp(key, "body") == 0)
 					fputs(posts[i].body, fp);
 				free(key);
