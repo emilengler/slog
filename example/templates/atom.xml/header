@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<title>My blog</title>
+	<updated>2000-01-01T00:00:00+00:00</updated>
+	<id>https://example.com/feed.atom</id>
+	<author>
+		<name>John Doe</name>
+	</author>

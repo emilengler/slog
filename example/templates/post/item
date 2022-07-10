@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>${title} - My blog</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1">
+		<link rel="alternate" type="application/atom+xml" href="atom.xml">
+	</head>
+	<body>
+		<header>
+			<h1>My blog</h1>
+		</header>
+		<main>
+			<article>
+				<h1>${title}</h1>
+				<em>${date}</em>
+				${body}
+			</article>
+			<a href="archive.html">Archive</a>
+			<a href="atom.xml">Feed</a>
+		</main>
+		<footer>
+			&copy; 2022 John Doe
+		</footer>
+	</body>
+</html>
