@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #include <lowdown.h>
 
@@ -46,17 +47,25 @@ struct template {
 
 /* Fatal wrappers for libc functions. */
 static FILE	*efopen(const char *, const char *);
-static void	*emalloc(size_t size);
+static void	*emalloc(size_t);
+static char	*estrdup(const char *);
+static char	*estrndup(const char *, size_t);
 
 /* Generic helper functions. */
 static char	*aprintf(const char *, ...);
+static char	*fmt_date(const char *, const char *);
 static char	*read_file(const char *);
 
 /* slog(1) specific functions. */
 static void	 markdown_init(struct markdown *, FILE *);
 static void	 markdown_free(struct markdown *);
+static void	 post_init(struct post *, FILE *);
+static void	 post_free(struct post *);
 static void	 template_init(struct template *, const char *);
 static void	 template_free(struct template *);
+
+/* Global variables. */
+static const char	*datefmt = "%Y-%m-%d %H:%M";
 
 static FILE *
 efopen(const char *path, const char *mode)
@@ -81,6 +90,23 @@ emalloc(size_t size)
 }
 
 static char *
+estrdup(const char *s)
+{
+	return estrndup(s, strlen(s));
+}
+
+static char *
+estrndup(const char *s, size_t n)
+{
+	char	*str;
+
+	if ((str = strndup(s, n)) == NULL)
+		err(1, "strndup");
+
+	return str;
+}
+
+static char *
 aprintf(const char *fmt, ...)
 {
 	char	*str;
@@ -98,6 +124,23 @@ aprintf(const char *fmt, ...)
 	if (vsnprintf(str, sz + 1, fmt, a2) == -1)
 		err(1, "vsnprintf");
 	va_end(a2);
+
+	return str;
+}
+
+static char *
+fmt_date(const char *date, const char *fmt)
+{
+	char		*str;
+	struct tm	 tm;
+
+	if (strptime(date, fmt, &tm) == NULL)
+		err(1, "strptime %s", date);
+
+	str = emalloc(64);
+	memset(str, '\0', 64);
+	if (strftime(str, 63, datefmt, &tm) == 0)
+		err(1, "strftime %s", date);
 
 	return str;
 }
@@ -149,6 +192,48 @@ markdown_free(struct markdown *md)
 {
 	lowdown_metaq_free(&md->metaq);
 	free(md->buf);
+}
+
+static void
+post_init(struct post *post, FILE *fp)
+{
+	struct lowdown_meta	*meta;
+	struct markdown		 md;
+
+	memset(post, 0, sizeof(struct post));
+	markdown_init(&md, fp);
+
+	if (md.nbuf == 0)
+		errx(1, "missing body");
+
+	/* Parse the document header. */
+	TAILQ_FOREACH(meta, &md.metaq, entries) {
+		/* TODO: Make this more elegant. */
+		/* TODO: Fix potential memory leaks regarding duplicate keys. */
+		if (strcmp(meta->key, "id") == 0)
+			post->id = estrdup(meta->value);
+		else if (strcmp(meta->key, "title") == 0)
+			post->title = estrdup(meta->value);
+		else if (strcmp(meta->key, "date") == 0)
+			post->date = fmt_date(meta->value, "%F %R");
+	}
+
+	/*
+	 * Simply pointing to md.buf is not possible, because there is no
+	 * gurantee, that the string is NUL-terminated.
+	 */
+	post->body = estrndup(md.buf, md.nbuf);
+
+	markdown_free(&md);
+}
+
+static void
+post_free(struct post *post)
+{
+	free(post->id);
+	free(post->title);
+	free(post->date);
+	free(post->body);
 }
 
 static void
