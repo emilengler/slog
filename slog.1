@@ -11,3 +11,81 @@
 .\" WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 .\" ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 .\" OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+.Dd July 10 2022
+.Dt SLOG 1
+.Os
+.Sh NAME
+.Nm slog
+.Nd static blog generator
+.Sh SYNOPSIS
+.Nm slog
+.Op Fl d Ar datefmt
+.Ar template
+.Op Ar post ...
+.Sh DESCRIPTION
+The
+.Nm
+utility converts Markdown blog posts into HTML and merges them into templates.
+.Pp
+A
+.Ar post
+is a Markdown document consisting of a document header, that is a set of
+key-value-pairs each on its own line and separated by a colon, an empty line and
+a body containing the actual blog post.
+The document header supports the following keys, all of which are mandatory:
+.Bl -tag -width "title" -offset indent
+.It Cm id
+A unique id for the blog post.
+It must be all lower-case and english alphabet.
+.It Cm title
+The title for the blog post.
+.It Cm date
+The date for the blog post in the following format:
+.Qq YYYY-MM-DD HH:MM .
+.El
+.Pp
+.Ar template
+is the path to a directory, which must contain the following three files:
+.Pa header ,
+.Pa item ,
+and
+.Pa footer .
+.Pa header
+and
+.Pa footer
+are both static files, that are stupidly placed around
+.Pa item .
+.Pa item
+on the other hand is a more intelligent file and is being rendered for each and
+every
+.Ar post .
+Therefore, it may contain variables in the following format:
+.Qq ${varname} .
+.Qq varname
+can be any of the following:
+.Bl -tag -width "title" -offset indent
+.It Cm id
+The
+.Qq id
+field of the blog post.
+.It Cm title
+The
+.Qq title
+field of the blog post.
+.It Cm date
+The
+.Qq date
+field of the blog post formatted in the
+.Xr strftime 3
+format by
+.Ar datefmt .
+.Sh EXIT STATUS
+.Ex -std
+.Sh AUTHORS
+The
+.Nm
+utility was written by
+.An Emil Engler ,
+.Mt engler+slog@unveil2.org .
+.Sh BUGS
+Yes.
