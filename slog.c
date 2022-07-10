@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Emil Engler <engler+slog@unveil2.org>
+ * Copyright (c) 2022 Emil Engler <me@emilengler.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
