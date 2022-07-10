@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <unistd.h>
 
 #include <lowdown.h>
 
@@ -46,24 +47,26 @@ struct template {
 };
 
 /* Fatal wrappers for libc functions. */
-static FILE	*efopen(const char *, const char *);
-static void	*emalloc(size_t);
-static char	*estrdup(const char *);
-static char	*estrndup(const char *, size_t);
+static FILE		*efopen(const char *, const char *);
+static void		*emalloc(size_t);
+static char		*estrdup(const char *);
+static char		*estrndup(const char *, size_t);
 
 /* Generic helper functions. */
-static char	*aprintf(const char *, ...);
-static char	*fmt_date(const char *, const char *);
-static char	*read_file(const char *);
+static char		*aprintf(const char *, ...);
+static char		*fmt_date(const char *, const char *);
+static char		*read_file(const char *);
 
 /* slog(1) specific functions. */
-static void	 markdown_init(struct markdown *, FILE *);
-static void	 markdown_free(struct markdown *);
-static void	 post_init(struct post *, FILE *);
-static void	 post_free(struct post *);
-static void	 template_init(struct template *, const char *);
-static void	 template_free(struct template *);
-static void	 write_page(struct template *, struct post[], size_t, FILE *);
+static void		 markdown_init(struct markdown *, FILE *);
+static void		 markdown_free(struct markdown *);
+static void		 post_init(struct post *, FILE *);
+static void		 post_free(struct post *);
+static void		 template_init(struct template *, const char *);
+static void		 template_free(struct template *);
+static __dead void	 usage(void);
+static void		 write_page(struct template *, struct post[], size_t,
+				    FILE *);
 
 /* Global variables. */
 static const char	*datefmt = "%Y-%m-%d %H:%M";
@@ -263,6 +266,12 @@ template_free(struct template *tmplt)
 	free(tmplt->footer);
 }
 
+static __dead void
+usage(void)
+{
+	errx(1, "usage: %s [-d datefmt] template post ...", getprogname());
+}
+
 static void
 write_page(struct template *tmplt, struct post posts[], size_t nposts, FILE *fp)
 {
@@ -304,5 +313,42 @@ write_page(struct template *tmplt, struct post posts[], size_t nposts, FILE *fp)
 int
 main(int argc, char *argv[])
 {
+	struct template	 tmplt;
+	FILE		*fp;
+	struct post	*posts;
+	size_t		 nposts, i;
+	char	ch;
+
+	while ((ch = getopt(argc, argv, "d:")) != -1) {
+		switch (ch) {
+		case 'd':
+			datefmt = optarg;
+			break;
+		default:
+			usage();
+		}
+	}
+	if (argc - optind < 2)
+		usage();
+
+	/* Read all posts into memory. */
+	nposts = argc - optind - 1;
+	posts = emalloc(sizeof(struct post) * nposts);
+	for (i = 0; i < nposts; ++i) {
+		fp = efopen(argv[optind + i + 1], "r");
+		post_init(posts + i, fp);
+		fclose(fp);
+	}
+
+	/* Render the page. */
+	template_init(&tmplt, argv[optind]);
+	write_page(&tmplt, posts, nposts, stdout);
+	template_free(&tmplt);
+
+	/* Clean everything up. */
+	for (i = 0; i < nposts; ++i)
+		post_free(posts + i);
+	free(posts);
+
 	return 0;
 }
