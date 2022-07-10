@@ -1,0 +1,5 @@
+			<article>
+				<h1><a href="post/${id}.html">${title}</a></h1>
+				<em>${date}</em>
+				${body}
+			</article>
