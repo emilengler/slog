@@ -221,6 +221,8 @@ post_init(struct post *post, FILE *fp)
 		else if (strcmp(meta->key, "date") == 0)
 			post->date = fmt_date(meta->value, "%F %R");
 	}
+	if (post->id == NULL || post->title == NULL || post->date == NULL)
+		errx(1, "missing required keys");
 
 	/*
 	 * Simply pointing to md.buf is not possible, because there is no
