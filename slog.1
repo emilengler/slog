@@ -1,0 +1,98 @@
+.\" Copyright (c) 2022 Emil Engler <engler+slog@unveil2.org>
+.\"
+.\" Permission to use, copy, modify, and distribute this software for any
+.\" purpose with or without fee is hereby granted, provided that the above
+.\" copyright notice and this permission notice appear in all copies.
+.\"
+.\" THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+.\" WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+.\" MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+.\" ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+.\" WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+.\" ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+.\" OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+.Dd July 10, 2022
+.Dt SLOG 1
+.Os
+.Sh NAME
+.Nm slog
+.Nd static blog generator
+.Sh SYNOPSIS
+.Nm slog
+.Op Fl d Ar datefmt
+.Ar template
+.Ar post ...
+.Sh DESCRIPTION
+The
+.Nm
+utility formats blog posts written in Markdown into HTML templates.
+.Pp
+It accepts the path to the template and the path to one or more posts as its
+arguments and writes the rendered HTML to stdout.
+The posts are being processed in the order as they were supplied, meaning that
+the newest post should be the first argument and the oldest post the last
+argument.
+.Pp
+Its arguments are as follows:
+.Bl -tag -width Ds
+.It Fl d Ar datefmt
+The format for dates in
+.Xr strftime 3
+syntax, instead of the default
+.Qq YYYY-MM-DD HH:MM .
+.El
+.Ss Blog posts
+A blog post is a text file written in Markdown.
+It must have a body and a so-called
+.Qq document header
+consisting of various key-value-pairs, each separated by a colon.
+The following keys are supported and mandatory:
+.Bl -tag -width "title"
+.It id
+The unique id for that particular blog post.
+It may only consist of lower-case characters found in the English alphabet.
+.It title
+The title for the blog post.
+.It date
+The date for the blog post in the following format:
+.Qq "YYYY-MM-DD HH:MM" .
+.Ss Templates
+A template is a directory consisting of three files:
+.Pa header ,
+.Pa item ,
+and
+.Pa footer .
+These files are being concatenated in this order, except that
+.Pa item
+is being processed for every post.
+Because of this,
+.Pa item
+supports variables, which are being replaced with the information
+found in the document header of the blog post.
+Variables are in the following format:
+.Qq ${varname} ,
+whereas
+.Qq varname
+can be any of the following:
+.Bl -tag -width "title"
+.It id
+The id of the blog post.
+.It title
+The title of the blog post.
+.It date
+The date formatted through
+.Ar datefmt .
+.It body
+The body of the blog post.
+.El
+.Sh EXIT STATUS
+.Ex -std
+.Sh SEE ALSO
+.Xr lowdown 1
+.Sh AUTHORS
+The
+.Nm
+utility was written by
+.An Emil Engler Aq Mt engler+slog@unveil2.org .
+.Sh BUGS
+Yes.
