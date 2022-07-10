@@ -63,6 +63,7 @@ static void	 post_init(struct post *, FILE *);
 static void	 post_free(struct post *);
 static void	 template_init(struct template *, const char *);
 static void	 template_free(struct template *);
+static void	 write_page(struct template *, struct post[], size_t, FILE *);
 
 /* Global variables. */
 static const char	*datefmt = "%Y-%m-%d %H:%M";
@@ -260,6 +261,44 @@ template_free(struct template *tmplt)
 	free(tmplt->header);
 	free(tmplt->item);
 	free(tmplt->footer);
+}
+
+static void
+write_page(struct template *tmplt, struct post posts[], size_t nposts, FILE *fp)
+{
+	char	*key, *p, *q;
+	size_t	 i;
+
+	fputs(tmplt->header, fp);
+
+	/* Render each and every post. */
+	for (i = 0; i < nposts; ++i) {
+		p = tmplt->item;
+		while (*p != '\0') {
+			if (p[0] == '$' && p[1] == '{') {
+				p += 2;
+				if ((q = strchr(p, '}')) == NULL)
+					errx(1, "missing closing bracket");
+
+				/* TODO: Make this more elegant. */
+				key = estrndup(p, q - p);
+				if (strcmp(key, "id") == 0)
+					fputs(posts[i].id, fp);
+				else if (strcmp(key, "title") == 0)
+					fputs(posts[i].title, fp);
+				else if (strcmp(key, "date") == 0)
+					fputs(posts[i].date, fp);
+				else if (strcmp(key, "body") == 0)
+					fputs(posts[i].body, fp);
+				free(key);
+
+				p = q + 1;
+			} else
+				fputc(*p++, fp);
+		}
+	}
+
+	fputs(tmplt->footer, fp);
 }
 
 int
