@@ -4,10 +4,13 @@
 		<title>My blog</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1">
-		<link rel="alternate" type="application/atom+xml" href="atom.xml">
+		<link rel="stylesheet" href="style.css">
+		<link rel="alternate" href="atom.xml" type="application/atom+xml">
 	</head>
 	<body>
 		<header>
-			<h1>My blog</h1>
+			<h1><a href="index.html">My blog</a></h1>
+			<hr>
 		</header>
 		<main>
+			<ul>

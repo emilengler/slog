@@ -1,1 +1,0 @@
-				<li>${date}: <a href="post/${id}.html">${title}</a></li>
