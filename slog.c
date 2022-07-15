@@ -141,6 +141,7 @@ fmt_date(const char *date, const char *fmt)
 	char		*str;
 	struct tm	 tm;
 
+	memset(&tm, 0, sizeof(struct tm));
 	if (strptime(date, fmt, &tm) == NULL)
 		err(1, "strptime %s", date);
 
