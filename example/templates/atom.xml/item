@@ -1,6 +1,6 @@
 
 	<entry>
-		<link href="https://example.com/blog/${id}.html">
+		<link href="https://example.com/blog/${id}.html" />
 		<id>${id}</id>
 		<title>${title}</title>
 		<updated>${date}</updated>
