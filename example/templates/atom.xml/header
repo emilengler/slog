@@ -9,4 +9,4 @@
 		<name>John Doe</name>
 		<email>john@example.com</email>
 	</author>
-	<rights>&copy; 2022 John Doe</rights>
+	<rights>(C) 2022 John Doe</rights>
