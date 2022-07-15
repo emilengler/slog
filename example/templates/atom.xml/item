@@ -1,9 +1,11 @@
+
 	<entry>
+		<link href="https://example.com/blog/${id}.html">
 		<id>${id}</id>
 		<title>${title}</title>
-		<published>${date}</published>
-		<link href="https://example.com/post/${id}.html" />
+		<updated>${date}</updated>
 		<content type="html">
-			${body}
+${body}
 		</content>
 	</entry>
+
