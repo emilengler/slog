@@ -23,7 +23,8 @@ clean:
 
 dist:
 	mkdir -p ${NAME}-${VERSION}
-	cp -f ${SRC} ${MAN1} LICENSE.md Makefile ${NAME}-${VERSION}
+	cp -f ${SRC} ${MAN1} CHANGES LICENSE.md Makefile README.md ${NAME}-${VERSION}
+	cp -rf example ${NAME}-${VERSION}
 	tar czf ${NAME}-${VERSION}.tar.gz ${NAME}-${VERSION}
 	rm -rf ${NAME}-${VERSION}
 
