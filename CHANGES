@@ -1,6 +1,14 @@
 CHANGES
 =======
 
+1.1.0 (2022-07-15)
+------------------
+- Update of the authors e-mail address.
+- A new and better example taken from the authors personal blog.
+- The tarball created with the "dist" target contains all files now.
+- Using a custom date format causes less undefined behavior now, because the
+  relevant data structure gets initialized by now.
+
 1.0.0 (2022-07-10)
 ------------------
 - Initial release of slog(1).
