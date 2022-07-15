@@ -1,8 +1,12 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
+	<id>https://example.com/blog</id>
 	<title>My blog</title>
-	<updated>2000-01-01T00:00:00+00:00</updated>
-	<id>https://example.com/feed.atom</id>
+	<updated>1970-01-01T00:00:00+0000</updated>
+	<link href="https://example.com/blog/atom.xml" rel="self" />
+	<link href="https://example.com/blog" />
 	<author>
 		<name>John Doe</name>
+		<email>john@example.com</email>
 	</author>
+	<rights>&copy; 2022 John Doe</rights>
