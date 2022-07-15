@@ -1,6 +1,6 @@
 # slog
 
-Another static site generator in just 294 lines of C.
+Another static site generator in just 295 lines of C.
 
 ## Features
 
