@@ -14,6 +14,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include "posix.h"
+
 #include <sys/types.h>
 #include <sys/queue.h>
 
@@ -356,10 +358,8 @@ main(int argc, char *argv[])
 	size_t		 nposts, i;
 	char	ch;
 
-#ifdef __OpenBSD__
 	if (pledge("stdio rpath", "") == -1)
 		err(1, "pledge");
-#endif
 
 	while ((ch = getopt(argc, argv, "d:")) != -1) {
 		switch (ch) {
