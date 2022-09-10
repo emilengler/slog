@@ -15,7 +15,8 @@
  */
 
 /*
- * This is a POSIX compatability layer for stupid non-OpenBSD users.
+ * This is a POSIX compatability layer to support non-OpenBSD systems
+ * (for masochists).
  */
 
 #ifndef __OpenBSD__
