@@ -172,6 +172,8 @@ read_file(const char *filename)
 	fread(str, 1, sz, fp);
 	str[sz] = '\0';
 
+	fclose(fp);
+
 	return str;
 }
 
