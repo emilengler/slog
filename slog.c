@@ -240,7 +240,6 @@ post_init(struct post *post, FILE *fp)
 	/* Parse the document header. */
 	TAILQ_FOREACH(meta, &md.metaq, entries) {
 		/* TODO: Make this more elegant. */
-		/* TODO: Fix potential memory leaks regarding duplicate keys. */
 		if (strcmp(meta->key, "id") == 0) {
 			validate_id(meta->value);
 			post->id = estrdup(meta->value);
