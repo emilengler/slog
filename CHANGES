@@ -1,6 +1,14 @@
 CHANGES
 =======
 
+1.2.0 (2022-09-10)
+------------------
+- Add a POSIX compatability layer to support non-OpenBSD systems
+  (for masochists).
+- Fix a memory and file descriptor leak.
+- Remove a false comment.
+- Update README.md regarding the supported operating systems.
+
 1.1.1 (2022-07-15)
 ------------------
 - Fix a few bugs in the atom.xml example template in order to generate valid
