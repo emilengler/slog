@@ -2,6 +2,8 @@
 
 Another static site generator in just 295 lines of C.
 
+Made for *OpenBSD*, runs on *POSIX*.
+
 ## Features
 
 * Supports Markdown.
