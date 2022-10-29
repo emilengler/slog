@@ -2,7 +2,7 @@
 
 Another static site generator in just 295 lines of C.
 
-Made for *OpenBSD*, runs on *POSIX*.
+Made for OpenBSD, but feel free to port.
 
 ## Features
 
