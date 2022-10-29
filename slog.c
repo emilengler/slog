@@ -14,8 +14,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "posix.h"
-
 #include <sys/types.h>
 #include <sys/queue.h>
 
